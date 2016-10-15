@@ -38,6 +38,8 @@
 
 /* Thread stack size */
 #define STACK_SIZE 65536
+#define _GNU_SOURCE  
+#include<linux/sched.h>
 
 /* From asm_linux.S */
 extern int atomic_add(int *var, int add);
@@ -128,7 +130,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 	nt->arg = arg;
 	stack = malloc(STACK_SIZE);
 
-	pid = __clone(start_thread, (char *)stack + STACK_SIZE - 16, CLONE_VM | CLONE_FS | CLONE_FILES, nt);
+	pid = __clone(start_thread, (char *)stack + STACK_SIZE - 32, CLONE_VM|CLONE_FS|CLONE_FILES, nt);
 	if (pid == -1) {
 		free(stack);
 		free(nt);
